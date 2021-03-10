@@ -24,6 +24,7 @@
           packages = flattenTree (recurseIntoAttrs {
             inherit apps;
           });
+          defaultPackage = packages."apps/concurrency-primitive-benchmarks";
         }
     );
 }

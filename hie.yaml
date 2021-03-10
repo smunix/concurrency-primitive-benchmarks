@@ -1,0 +1,4 @@
+cradle:
+  stack:
+    - path: "./app/Main.hs"
+      component: "concurrency-primitive-benchmarks:exe:benches"
