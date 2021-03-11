@@ -6,25 +6,32 @@
     with nixpkgs.lib;
     eachSystem [ "x86_64-linux" ] (system:
       let version = "${substring 0 8 self.lastModifiedDate}.${self.shortRev or "dirty"}";
-          overlay = final: _:
+          overlay = compilers: final: _:
             with final;
-            with haskellPackages;
             with haskell.lib;
+            let apply =
+                  compiler:
+                  with haskell.packages."${compiler}".extend(hself: hsuper:
+                    with hself;
+                    {
+                      text-short = dontHaddock (dontCheck (hsuper.text-short)) ;
+                    }); 
+                  recurseIntoAttrs ({
+                    concurrency-primitive-benchmarks =
+                      overrideCabal (callCabal2nix "concurrency-primitive-benchmarks" ./. {})
+                        (o: { version = o.version + "-${compiler}-" + version; });
+                  });
+            in
             {
-              apps = recurseIntoAttrs ({
-                concurrency-primitive-benchmarks =
-                  overrideCabal (callCabal2nix "concurrency-primitive-benchmarks" ./. {})
-                    (o: { version = o.version + "-" + version; });
-              });
+              apps = recurseIntoAttrs (listToAttrs (map (compiler: { name = "${compiler}"; value = apply compiler; }) compilers));
             };
-          overlays = [ overlay ];
+          compilers = ["ghc8103" "ghc8104" "ghc901"];
+          overlays = [ (overlay compilers) ];
       in
         with (import nixpkgs { inherit system overlays; });
         rec {
-          packages = flattenTree (recurseIntoAttrs {
-            inherit apps;
-          });
-          defaultPackage = packages."apps/concurrency-primitive-benchmarks";
+          packages = flattenTree (recurseIntoAttrs { inherit apps; });
+          defaultPackage = packages."apps/ghc901/concurrency-primitive-benchmarks";
         }
     );
 }

@@ -1,6 +1,6 @@
 {-# LANGUAGE BangPatterns #-}
 module Main where
-import Criterion.Main
+import Gauge.Main
 import Control.Concurrent
 import Data.IORef
 import Control.Monad

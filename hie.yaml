@@ -1,4 +1,4 @@
 cradle:
-  stack:
-    - path: "./app/Main.hs"
+  cabal:
+    - path: "app/Main.hs"
       component: "concurrency-primitive-benchmarks:exe:benches"
