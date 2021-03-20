@@ -31,7 +31,7 @@
         with (import nixpkgs { inherit system overlays; });
         rec {
           packages = flattenTree (recurseIntoAttrs { inherit apps; });
-          defaultPackage = packages."apps/ghc901/concurrency-primitive-benchmarks";
+          defaultPackage = packages."apps/ghc8104/concurrency-primitive-benchmarks";
         }
     );
 }

@@ -19,6 +19,7 @@ executable benches
   main-is:             Main.hs
   ghc-options:         -O2 -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
+                     , ekg
                      , gauge
                      , stm
                      , async
